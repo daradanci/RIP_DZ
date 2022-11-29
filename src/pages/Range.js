@@ -7,6 +7,7 @@ import {
     useParams,
     useRouteMatch
 } from "react-router-dom";
+import {ErrorMessage, SuccessMessage, LoadingMessage} from "../store/pref";
 import {useSelector, useDispatch} from "react-redux";
 import {fetchRange, fetchRangeElement} from "../store/RangeSlice";
 
@@ -40,7 +41,7 @@ export const Range=()=>{
 
     return(
         <div>
-            {rangeStatus === 'succeeded' &&
+            {rangeStatus === SuccessMessage &&
                 <div>
                     <div className={"assortment"}>Ассортимент</div>
                     <div className={"range_list"}>
@@ -53,10 +54,10 @@ export const Range=()=>{
                     </div>
                 </div>
             }
-            {rangeStatus==='loading'&&
+            {rangeStatus===LoadingMessage&&
                 <div className={"loading-message"}><h1>Загрузка...</h1></div>
             }
-            {rangeStatus==='failed'&&
+            {rangeStatus===ErrorMessage&&
                 <div className={"error-message"}><h1>Ошибка: {rangeError}</h1></div>
             }
         </div>

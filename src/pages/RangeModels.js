@@ -7,6 +7,7 @@ import {
     useParams,
     useRouteMatch
 } from "react-router-dom";
+import {ErrorMessage, SuccessMessage, LoadingMessage} from "../store/pref";
 import {useSelector, useDispatch} from "react-redux";
 import {fetchModels, fetchPrices, updateSearchValue, updatePrices, setIsOpen} from "../store/ModelSlice";
 import {fetchRangeElement} from "../store/RangeSlice";
@@ -29,15 +30,6 @@ export const RangeModels=()=>{
 
     useEffect(() => {
         const fetchData = async () => {
-            await dispatch(fetchModels(rangeId))
-                .then((originalPromiseResult) => {
-                    console.log('MODELS FETCHED in RangeModels.js')
-                    console.log(originalPromiseResult.payload)
-                })
-                .catch((rejectedValueOrSerializedError) => {
-                    console.log('ERROR APPEARED WHILE MODELS FETCHING in RangeModels.js')
-                    console.log(rejectedValueOrSerializedError)
-                })
             await dispatch(fetchRangeElement(rangeId))
                 .then((originalPromiseResult) => {
                     console.log('RANGE EL. FETCHED in RangeModels.js')
@@ -45,6 +37,17 @@ export const RangeModels=()=>{
                 })
                 .catch((rejectedValueOrSerializedError) => {
                     console.log('ERROR APPEARED WHILE RANGE EL. FETCHING in RangeModels.js')
+                    console.log(rejectedValueOrSerializedError)
+                })
+                .then(()=>{
+                dispatch(fetchModels(rangeId))
+                })
+                .then((originalPromiseResult) => {
+                    console.log('MODELS FETCHED in RangeModels.js')
+                    console.log(originalPromiseResult.payload)
+                })
+                .catch((rejectedValueOrSerializedError) => {
+                    console.log('ERROR APPEARED WHILE MODELS FETCHING in RangeModels.js')
                     console.log(rejectedValueOrSerializedError)
                 })
             await dispatch(fetchPrices(rangeId))
@@ -91,7 +94,9 @@ export const RangeModels=()=>{
                 <ul className={"autocomplete"}>{
                     search_input && isOpen
                         ?
+                        // filteredModels.map(model => (
                         filteredModels.map(model => (
+
                             <li className={"autocomplete_item"} onClick={itemCLickHandler}
                                 key={"modelId:" + model.modelid}>{model.modelname}</li>
 
@@ -131,7 +136,7 @@ export const RangeModels=()=>{
                 </div>
             </form>
 
-            {modelStatus === 'succeeded' &&
+            {modelStatus === SuccessMessage &&
                 <div>
                     <div className={"models_list"}>
                         {rangeStatus==='succeeded' &&
@@ -140,7 +145,7 @@ export const RangeModels=()=>{
 
 
 
-                        {models.map((model, index)=>(
+                        {filteredModels.map((model, index)=>(
 
                         <div>
                             <li key={index}>
@@ -169,10 +174,10 @@ export const RangeModels=()=>{
 
                 </div>
             }
-            {modelStatus==='loading'&&
+            {modelStatus===LoadingMessage&&
                 <div className={"loading-message"}><h1>Загрузка...</h1></div>
             }
-            {modelStatus==='failed'&&
+            {modelStatus===ErrorMessage&&
                 <div className={"error-message"}><h1>Ошибка: {modelError}</h1></div>
             }
         </div>

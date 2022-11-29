@@ -1,11 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import {IP4} from "./pref";
+import {ErrorMessage, SuccessMessage, LoadingMessage, IP4} from "./pref";
 
 export const fetchModels = createAsyncThunk(
     'models/fetchModels',
     async (rangeId) => {
         const response = await axios(`${IP4}range/${rangeId}/models/`);
+        return response.data
+    }
+)
+export const fetchModel = createAsyncThunk(
+    'models/fetchModel',
+    async (params) => {
+        const response = await axios(`${IP4}range/${params['rangeId']}/models/${params['modelId']}`);
         return response.data
     }
 )
@@ -16,7 +23,13 @@ export const fetchPrices=createAsyncThunk(
         return response.data
     }
 )
-
+export const fetchProducers = createAsyncThunk(
+    'models/fetchProducers',
+    async () => {
+        const response = await axios(`${IP4}producer/`);
+        return response.data
+    }
+)
 export const modelSlice = createSlice({
     name: "modelSlice",
     initialState: {
@@ -30,6 +43,7 @@ export const modelSlice = createSlice({
         minBorder:0,
         search_input: '',
         isOpen: true,
+        producers:[],
 
     },
     reducers: {
@@ -48,18 +62,16 @@ export const modelSlice = createSlice({
         // Add reducers for additional action types here, and handle loading state as needed
         builder
             .addCase(fetchModels.pending, (state, action) => {
-                state.modelStatus = 'loading'
+                state.modelStatus = LoadingMessage
             })
             .addCase(fetchModels.fulfilled, (state, action) => {
                 // Add user to the state array
                 state.models=action.payload
-                state.modelStatus = 'succeeded'
-
+                state.modelStatus = SuccessMessage
             })
             .addCase(fetchModels.rejected, (state, action) => {
-                state.modelStatus = 'failed'
+                state.modelStatus = ErrorMessage
                 state.modelError = action.error.message
-
             })
             .addCase(fetchPrices.fulfilled, (state, action) => {
                 // Add user to the state array
@@ -69,6 +81,23 @@ export const modelSlice = createSlice({
                 state.minBorder=action.payload[0].min.price__min
                 // state.modelStatus = 'succeeded'
 
+            })
+            .addCase(fetchModel.pending, (state, action) => {
+                state.modelStatus = LoadingMessage
+            })
+            .addCase(fetchModel.fulfilled, (state, action) => {
+                // Add user to the state array
+                state.model=action.payload
+                state.modelStatus = SuccessMessage
+            })
+            .addCase(fetchModel.rejected, (state, action) => {
+                state.modelStatus = ErrorMessage
+                state.modelError = action.error.message
+            })
+            .addCase(fetchProducers.fulfilled, (state, action) => {
+                // Add user to the state array
+                state.producers=action.payload
+                console.log(`PRODUCERS: ${state.producers}`)
             })
     },
 });

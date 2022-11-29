@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import {IP4} from "./pref";
+import {ErrorMessage, IP4, LoadingMessage, SuccessMessage} from "./pref";
 
 export const fetchRange = createAsyncThunk(
     'range/fetchRange',
@@ -32,30 +32,30 @@ export const rangeSlice = createSlice({
         // Add reducers for additional action types here, and handle loading state as needed
         builder
             .addCase(fetchRange.pending, (state, action) => {
-                state.rangeStatus = 'loading'
+                state.rangeStatus = LoadingMessage
             })
             .addCase(fetchRange.fulfilled, (state, action) => {
                 // Add user to the state array
                 state.range=action.payload
-                state.rangeStatus = 'succeeded'
+                state.rangeStatus = SuccessMessage
 
             })
             .addCase(fetchRange.rejected, (state, action) => {
-                state.rangeStatus = 'failed'
+                state.rangeStatus = ErrorMessage
                 state.rangeError = action.error.message
 
             })
             .addCase(fetchRangeElement.pending, (state, action) => {
-                state.rangeStatus = 'loading'
+                state.rangeStatus = LoadingMessage
             })
             .addCase(fetchRangeElement.fulfilled, (state, action) => {
                 // Add user to the state array
                 state.rangeElement=action.payload
-                state.rangeStatus = 'succeeded'
+                state.rangeStatus = SuccessMessage
 
             })
             .addCase(fetchRangeElement.rejected, (state, action) => {
-                state.rangeStatus = 'failed'
+                state.rangeStatus = ErrorMessage
                 state.rangeError = action.error.message
 
             })
