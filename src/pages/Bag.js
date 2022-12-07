@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import DocumentTitle from 'react-document-title'
 import ErrorComponent from "../components/ErrorComponent";
+import {IP4} from "../store/pref";
 
 
 class Bag extends Component {
@@ -14,21 +15,32 @@ class Bag extends Component {
             purchases:[],
             sum: 0,
             bag:{},
-            toDelete:null
+            bags:[],
+            toDelete:null,
+            bagStates:[],
+
         }
         this.bagId=0;
     }
     componentDidMount() {
+        // this.load_bag_states();
         if(localStorage.getItem('userId')!=='null'){
 
         this.load_client();
         this.load_bag();
         this.load_purchases();
+        this.load_bags();
         // this.load_sum();
         }
     }
     load_bag(){
-        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}/bag/`)
+        const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                };
+        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}/bag/`, requestOptions)
         .then (res => res.json())
         .then(
             (result) =>{
@@ -38,22 +50,40 @@ class Bag extends Component {
                     sum:result[0]['sum']
                 });
             }
-        ).then(()=>{
-            // if (!this.state.bag){
-            //     this.setState({
-            //         bag:{'sum':0}
-            //     })
-            // }
-
-                // this.setState((state) > ({
-                //     isLoaded: true,
-                //     sum: 0
-                // }))
-            })
-
+        )
+    }
+    load_bags(){
+        const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                };
+        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}/bags/`, requestOptions)
+        .then (res => res.json())
+        .then(
+            (result) =>{
+                // let temp=result;
+                // temp.splice(temp[0],1)
+                this.setState({
+                    isLoaded:true,
+                    bags: result,
+                });
+                console.log(result)
+            }
+        )
+            // .then(()=>{
+            //     this.load_bag_states()
+            // })
     }
     load_client(){
-        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}`)
+        const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                };
+        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}`, requestOptions)
         .then (res => res.json())
         .then(
             (result) =>{
@@ -65,7 +95,13 @@ class Bag extends Component {
         )
     }
     load_purchases(){
-        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}/current_bag/`)
+        const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                };
+        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}/current_bag/`, requestOptions)
         .then (res => res.json())
         .then(
             (result) =>{
@@ -77,15 +113,36 @@ class Bag extends Component {
         )
 
     }
+    load_bag_states(){
+        const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                };
+        const res = fetch(`http://127.0.0.1:8000/state/`, requestOptions)
+        .then (res => res.json())
+        .then(
+            (result) =>{
+                this.setState({
+                    isLoaded:true,
+                    bagStates: result,
+                });
+
+            }
+        )
+
+
+    }
 
     render() {
-        const {error, isLoaded,bag, purchases, sum} = this.state;
+        const {error, isLoaded,bag,bags, purchases, sum, bagStates} = this.state;
         // console.log(purchases);
         const decline=(purchase)=>{
             let item=purchase.idstock;
             const requestOptions = {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  },
                     body: JSON.stringify({ itemid:item.itemid, idmodel:item.idmodel.modelid, size: item.size, amount: item.amount+1 })
                 };
             fetch(`http://127.0.0.1:8000/stock/${item.itemid}/`, requestOptions)
@@ -94,7 +151,7 @@ class Bag extends Component {
             })
             const deleteOptions = {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  },
                 };
             fetch(`http://127.0.0.1:8000/purchase/${purchase.purchaseid}/`, deleteOptions)
                 .then(response=> {
@@ -103,9 +160,16 @@ class Bag extends Component {
             alert(`Удалено из корзины: ${ purchase.idstock.idmodel.modelname } - ${purchase.idstock.size}`)
         }
         const buy=()=>{
-            fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}/bag/1/buy/`)
+            const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                };
+            fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}/bag/1/buy/`, requestOptions)
                 .then(response=>{
                     this.load_purchases();
+                    this.load_bags();
                     this.load_bag();
                     this.setState({sum:0})
                     // this.load_sum();
@@ -156,6 +220,17 @@ class Bag extends Component {
                 {!sum&&
                 <div className={'error_message'}>Корзина пуста.</div>
                 }
+                {bags.length>0&&
+                <div className={'assortment'}>Предыдущие заказы</div>
+                }
+                {bags.map((item,index)=>(
+                    <div key={index} className={'old_bag'}>
+                        Заказ от {item.date} на сумму {item.sum} руб.:{item.bagstate.statename}
+                    </div>
+                    ))
+                }
+
+
             </div>
             </DocumentTitle>
         );

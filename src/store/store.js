@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import rangeReducer from './RangeSlice';
 import modelReducer from './ModelSlice';
-
 import userReducer from './UserSlice';
+import managerReducer from './ManagerSlice';
 
 export default configureStore({
     reducer: {
@@ -13,6 +13,7 @@ export default configureStore({
         rangeElement:rangeReducer,
         // MODELS
         models:modelReducer,
+        allModels:modelReducer,
         modelStatus:modelReducer,
         modelError:modelReducer,
         model:modelReducer,
@@ -38,7 +39,13 @@ export default configureStore({
         dateJoined: userReducer,
         user:userReducer,
         isStaff:userReducer,
+        isUser:userReducer,
 
+        // MANAGER
+        managerBags:managerReducer,
+        managerClients:managerReducer,
+        managerClient:managerReducer,
+        bagStates: managerReducer,
 
     },
 });

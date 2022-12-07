@@ -60,7 +60,6 @@ li {
   margin-left: auto;
   margin-right: auto;
   width: 6em;
-
 }
 .range{
   display: block;
@@ -70,7 +69,20 @@ li {
   border: lightsalmon solid 3px;
 
 }
+.manager_choices_list{
+  margin-left: auto;
+  margin-right: auto;
+  width: 6em;
+}
+.manager_choice{
+  display: block;
+  margin: 5px;
+  padding: 5px;
+  background-color: lemonchiffon;
+  border: lightsalmon solid 3px;
+  width:100%
 
+}
 .models_list{
   /*text-align: center;*/
   display: block;
@@ -240,4 +252,22 @@ li {
   padding: 20px;
   border: 2px solid coral;
   margin-bottom: 10px;
+}
+.clientInfo{
+  margin: 5px;
+  padding:5px;
+  border: 1px orangered solid;
+}
+.client_bags{
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+.client_bag{
+  margin: 4px;
+  padding: 2px;
+  border: lightsalmon 1px solid;
+  width: 158px;
+  border-radius: 5px;
+
 }

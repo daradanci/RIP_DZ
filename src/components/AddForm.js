@@ -4,7 +4,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {checkIfStaff, updateIfStaff, userInfo} from "../store/UserSlice";
 import {IP4} from "../store/pref";
 import {fetchRange} from "../store/RangeSlice";
-import {fetchProducers} from "../store/ModelSlice";
+import {fetchModels,fetchAllModels, fetchProducers} from "../store/ModelSlice";
 
 
 
@@ -22,15 +22,14 @@ function AddForm(props) {
     const [formRange, setFormRange] = useState()
     const [formPrice, setFormPrice] = useState()
     const [formImage, setFormImage] = useState()
-    // const [newDatetime, setNewDatetime] = useState()
-    // const [newDis, setNewDis] = useState()
-    // const [newType, setNewType] = useState()
-    // const [types, setTypes] = useState([])
-    // const [diss, setDiss] = useState([])
-    // const [date, setDate] = useState(new Date());
+    const [formSize, setFormSize] = useState()
+    const [formAmount, setFormAmount] = useState()
+    const [formModel, setFormModel] = useState()
+
     const { range } = useSelector((state) => state.range);
     const { producers } = useSelector((state) => state.producers);
     const { isStaff } = useSelector((state) => state.isStaff);
+    const { allModels } = useSelector((state) => state.allModels);
 
     const dispatch = useDispatch();
 
@@ -38,6 +37,7 @@ function AddForm(props) {
         console.log('Add form');
         dispatch(fetchRange())
         dispatch(fetchProducers())
+        dispatch(fetchAllModels())
 
     }, [])
 
@@ -46,7 +46,7 @@ function AddForm(props) {
         e.preventDefault();
             const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access}`  },
             body: JSON.stringify({
                     rangename:newRange
                 })
@@ -59,7 +59,7 @@ function AddForm(props) {
             e.preventDefault();
             const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access}`  },
             body: JSON.stringify({
                     producername:newProducer
                 })
@@ -74,7 +74,7 @@ function AddForm(props) {
 
             const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access}` },
             body: JSON.stringify({
                 idrange:range1,
                 modelname:newModel,
@@ -88,26 +88,41 @@ function AddForm(props) {
             setFormPrice("")
             setNewModel("")
         }
+
+        const add_stock = e=>{
+            e.preventDefault();
+            const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${access}`  },
+            body: JSON.stringify({
+                size:'',
+                amount:0,
+                idmodel:0,
+                })
+            };
+            fetch(`${IP4}stock/`, requestOptions)
+            setNewProducer("")
+        }
+
         return (
             <div className="AddForm">
                 {isStaff&&
                 <div>
                 <h1>Добавление </h1>
-                    <form className="AddRangeForm" onSubmit={add_range}>
+                    <form className="AddForm" onSubmit={add_range}>
                         <div>Категория одежды</div>
                         <input type="text" name="Категория одежды" value={newRange}
                                onChange={e => setNewRange(e.target.value)} placeholder="Название"/>
                         <input type="submit" name="submit" value="+"/>
                     </form>
-                    <form className="AddProducerForm" onSubmit={add_producer}>
+                    <form className="AddForm" onSubmit={add_producer}>
                         <div>Производитель</div>
                         <input type="text" name="Производитель" value={newProducer}
                                onChange={e => setNewProducer(e.target.value)} placeholder="Производитель"/>
                         <input type="submit" name="submit" value="+"/>
-
                     </form>
 
-                    <form className="AddModelForm" onSubmit={add_model}>
+                    <form className="AddForm" onSubmit={add_model}>
                         <div>Модель</div>
 
                         <input type="text" name="Модель" value={newModel}
@@ -131,9 +146,15 @@ function AddForm(props) {
                         <input type="text" name="Изображение" value={formImage}
                                onChange={e => setFormImage(e.target.value)} placeholder="Изображение"/>
                         <input type="submit" name="submit" value="+"/>
-
                     </form>
 
+                    {/*<form className="AddForm" onSubmit={add_stock}>*/}
+                    {/*    <div>Размер</div>*/}
+                    {/*    <input type="text" name="Размеры" value={newProducer}*/}
+                    {/*           onChange={e => setFormSize(e.target.value)} placeholder="Производитель"/>*/}
+                    {/*    <input type="submit" name="submit" value="+"/>*/}
+
+                    {/*</form>*/}
                 </div>
                 }
             </div>

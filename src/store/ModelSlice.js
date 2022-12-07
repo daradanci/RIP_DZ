@@ -4,29 +4,76 @@ import {ErrorMessage, SuccessMessage, LoadingMessage, IP4} from "./pref";
 
 export const fetchModels = createAsyncThunk(
     'models/fetchModels',
+    async (rangeId, deep=false) => {
+        const config={
+            headers:{
+                Authorization:localStorage.getItem('userId')
+            }
+        }
+        if(deep){
+        const response = await axios(`${IP4}range/${rangeId}/models?deep`, config);
+        return response.data
+
+        }
+        else{
+
+        const response = await axios(`${IP4}range/${rangeId}/models/`, config);
+        return response.data
+        }
+    }
+)
+
+export const fetchAllModels = createAsyncThunk(
+    'models/fetchAllModels',
     async (rangeId) => {
-        const response = await axios(`${IP4}range/${rangeId}/models/`);
+        const config={
+            headers:{
+                Authorization:localStorage.getItem('userId')
+            }
+        }
+        const response = await axios(`${IP4}models/`, config);
         return response.data
     }
 )
 export const fetchModel = createAsyncThunk(
     'models/fetchModel',
-    async (params) => {
-        const response = await axios(`${IP4}range/${params['rangeId']}/models/${params['modelId']}`);
+    async (params, deep=false) => {
+        const config={
+            headers:{
+                Authorization:localStorage.getItem('userId')
+            }
+        }
+        if (deep){
+            const response = await axios(`${IP4}range/${params['rangeId']}/models/${params['modelId']}/?deep`, config);
         return response.data
+        }
+        else{
+            const response = await axios(`${IP4}range/${params['rangeId']}/models/${params['modelId']}`, config);
+        return response.data
+        }
     }
 )
 export const fetchPrices=createAsyncThunk(
     'models/fetchPrices',
     async (rangeId) => {
-        const response = await axios(`${IP4}range/${rangeId}/min_max_price/`);
+        const config={
+            headers:{
+                Authorization:localStorage.getItem('userId')
+            }
+        }
+        const response = await axios(`${IP4}range/${rangeId}/min_max_price/`, config);
         return response.data
     }
 )
 export const fetchProducers = createAsyncThunk(
     'models/fetchProducers',
     async () => {
-        const response = await axios(`${IP4}producer/`);
+        const config={
+            headers:{
+                Authorization:localStorage.getItem('userId')
+            }
+        }
+        const response = await axios(`${IP4}producer/`, config);
         return response.data
     }
 )
@@ -34,6 +81,7 @@ export const modelSlice = createSlice({
     name: "modelSlice",
     initialState: {
         models:[],
+        allModels:[],
         modelStatus:'loading',
         modelError:null,
         model:null,
@@ -61,6 +109,10 @@ export const modelSlice = createSlice({
     extraReducers: (builder) => {
         // Add reducers for additional action types here, and handle loading state as needed
         builder
+            .addCase(fetchAllModels.fulfilled, (state, action) => {
+                // Add user to the state array
+                state.allModels=action.payload
+            })
             .addCase(fetchModels.pending, (state, action) => {
                 state.modelStatus = LoadingMessage
             })
@@ -68,6 +120,8 @@ export const modelSlice = createSlice({
                 // Add user to the state array
                 state.models=action.payload
                 state.modelStatus = SuccessMessage
+                console.log('MODELS FETCHED')
+                console.log(state.models)
             })
             .addCase(fetchModels.rejected, (state, action) => {
                 state.modelStatus = ErrorMessage
@@ -80,7 +134,6 @@ export const modelSlice = createSlice({
                 state.maxBorder=action.payload[0].max.price__max
                 state.minBorder=action.payload[0].min.price__min
                 // state.modelStatus = 'succeeded'
-
             })
             .addCase(fetchModel.pending, (state, action) => {
                 state.modelStatus = LoadingMessage
@@ -101,7 +154,6 @@ export const modelSlice = createSlice({
             })
     },
 });
-
 
 // Action creators are generated for each case reducer function
 // export const { fetchProducts1} = contactSlice.actions;

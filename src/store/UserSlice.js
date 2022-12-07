@@ -76,7 +76,12 @@ export const refreshToken = createAsyncThunk(
 export const userInfo = createAsyncThunk(
     'users/userInfo',
     async (userId) => {
-        const response = await axios(`${IP4}client/${userId}`);
+        const config={
+            headers:{
+                Authorization:`Bearer ${localStorage.getItem('accessToken')}`
+            }
+        }
+        const response = await axios(`${IP4}client/${userId}`, config);
         return response.data
     }
 )
@@ -98,6 +103,7 @@ export const userSlice = createSlice({
         dateJoined: '',
         user: null,
         isStaff:false,
+        isUser:false,
 
     },
     reducers: {
@@ -173,9 +179,9 @@ export const userSlice = createSlice({
             state.user=action.payload
             state.userStatus = SuccessMessage
             state.isStaff=action.payload.is_staff
-            console.log('USER INFO:')
-            console.log(state.user)
-            console.log(`is staff: ${state.isStaff}`)
+            // console.log('USER INFO:')
+            // console.log(state.user)
+            // console.log(`is staff: ${state.isStaff}`)
             })
 
     },

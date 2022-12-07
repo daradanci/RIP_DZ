@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import {Link, Route} from "react-router-dom";
-
+import {useDispatch} from "react-redux";
+import {setAccess as updateAccess}  from "../store/UserSlice" ;
 
 
 function Auth(props){
@@ -17,6 +18,7 @@ function Auth(props){
     const [ email, setEmail] = useState('')
     const [ dateJoined, setDateJoined] = useState('')
     const [ error, setError] = useState()
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (access) {
@@ -27,15 +29,20 @@ function Auth(props){
                         'Content-Type': 'application/json;charset=utf-8',
                         'Authorization': `Bearer ${access}`,
                     },
+
                 }
             )
                 .then(response => {
                     console.log(response)
                     if (response.ok) {
+                        // dispatch(updateAccess(access));
                         return response.json()
+
                     }
                     else {
                         if (response.status === 401) {
+                            // dispatch(updateAccess(access));
+
                             throw Error('refresh')
                         }
                         throw Error(`Something went wrong: code ${response.status}`)
@@ -90,6 +97,7 @@ function Auth(props){
                     localStorage.setItem('refreshToken', refresh)
                     setRefresh(refresh)
                     setError(null)
+                    dispatch(updateAccess(access));
 
                 })
                 .catch(error => {
@@ -130,6 +138,7 @@ function Auth(props){
                 setRefresh(refresh)
                 setError(null)
                 setError(null)
+                dispatch(updateAccess(access));
             })
             .catch(error => {
                 console.log(error)
@@ -141,7 +150,10 @@ function Auth(props){
     console.log(access)
     return (
         <div className="App">
-            {error? <p>{error}</p> : null}
+            {error?
+                <div>
+                Сессия завершена.<Link to={"/logout"}>Перезайдите</Link>.
+                </div> : null}
             {!access?
                 loading? "Загрузка..." :
                     <form className="loginForm" onSubmit={submitHandler}>

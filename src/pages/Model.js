@@ -36,7 +36,11 @@ class Model extends Component {
     }
 
     load_client(){
-        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}`)
+         const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('userId')}`  },
+                };
+        const res = fetch(`http://127.0.0.1:8000/client/${localStorage.getItem('userId')}`, requestOptions)
             .then (res => res.json())
             .then(
                 (result) =>{
@@ -86,7 +90,13 @@ class Model extends Component {
             )
     }
     load_sizes(){
-        const res2 = fetch(`http://127.0.0.1:8000/range/${this.rangeId}/models/${this.modelId}/stock/`)
+        const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                };
+        const res2 = fetch(`http://127.0.0.1:8000/range/${this.rangeId}/models/${this.modelId}/stock/`, requestOptions)
             .then (res2 => res2.json())
             .then(
 
@@ -106,7 +116,11 @@ class Model extends Component {
             )
     }
     load_producer(){
-        const res3 = fetch(`http://127.0.0.1:8000/producer/${this.producerId}`)
+        const requestOptions = {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  },
+                };
+        const res3 = fetch(`http://127.0.0.1:8000/producer/${this.producerId}`, requestOptions)
             .then (res3 => res3.json())
             .then(
 
@@ -142,7 +156,7 @@ class Model extends Component {
                 let modelId=combo[4];
                 const requestOptions = {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  },
                     body: JSON.stringify({ itemid:item.itemid, idmodel:item.idmodel, size: item.size, amount: item.amount-1 })
                 };
                 fetch(`http://127.0.0.1:8000/range/${rangeId}/models/${modelId}/stock/${item.itemid}/`, requestOptions)
@@ -151,7 +165,7 @@ class Model extends Component {
 
                 const requestOptions1 = {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`  },
                     // body: JSON.stringify({ quantity:1, idbag:this.state.client.current_bag, idstock:item.itemid })
                     body: JSON.stringify({ quantity:1, idbag:bag.bagid, idstock:item.itemid })
                 };
@@ -171,7 +185,7 @@ class Model extends Component {
                     <div className={"model_info"}>
 
                         <div className={"model_name"}>{model.modelname}</div>
-                        <div className={"producer"}>Производитель: {producer.producername}</div>
+                        {/*<div className={"producer"}>Производитель: {producer.producername}</div>*/}
                         <div className={"price"}>Цена: {model.price} руб.</div>
                         <img src={"/images/"+model.image} alt={"model_image:"+model.image} width={"250px"} className={"image"}/>
 

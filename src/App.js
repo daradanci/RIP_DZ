@@ -13,36 +13,22 @@ import Auth from "./pages/Auth"
 import Logout from "./pages/Logout"
 import AddForm from "./components/AddForm";
 import { lazy, Suspense } from 'react';
+import ManagerBags from "./components/ManagerBags";
+import ManagerClients from "./components/ManagerClients";
+import ManagerClient from "./components/ManagerClient";
+import NavBar from "./components/NavBar";
+import EditForm from "./components/EditForm";
+import ManagerRange from "./components/ManagerRange";
 
 // const LoginPage = lazy(() => import('./Auth'));
 // const Register = lazy(() => import('./Registration'));
 
 function App() {
-
   return (
       <DocumentTitle title = 'Shop100'>
         <BrowserRouter basename="/" >
           <div>
-            <div className={"navbar"}>
-              <div className={"nav-tabs"}>
-                <Link to="/">Дом</Link>
-              </div>
-              <div className={"nav-tabs"}>
-                <Link to="/range">Ассортимент</Link>
-              </div>
-              <div className={"nav-tabs"}>
-                <Link to="/bag">Корзина</Link>
-              </div>
-              <div className={"nav-tabs"}>
-                <Link to="/reg">Регистрация</Link>
-              </div>
-              <div className={"nav-tabs"}>
-                <Link to="/auth">Вход</Link>
-              </div>
-              <div className={"nav-tabs"}>
-                  <Link to="/logout">Выход</Link>
-              </div>
-            </div>
+            <NavBar/>
             <Switch>
               <Route exact path="/">
                 <Home/>
@@ -73,8 +59,20 @@ function App() {
               <Route exact path={'/logout'}>
                 <Logout/>
               </Route>
-               <Route exact path={'/add'}>
+               <Route exact path={'/manager/add'}>
                 <AddForm/>
+              </Route>
+              <Route exact path={'/manager/edit'}>
+                <EditForm/>
+              </Route>
+              <Route exact path={'/manager/range/:rangeId'}>
+                <ManagerRange/>
+              </Route>
+              <Route exact path={'/manager/clients'}>
+                <ManagerClients/>
+              </Route>
+              <Route exact path={'/manager/clients/:clientId'}>
+                <ManagerClient/>
               </Route>
             </Switch>
           </div>
