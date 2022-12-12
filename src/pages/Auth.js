@@ -95,7 +95,7 @@ function Auth(props){
                     localStorage.setItem('accessToken', access)
                     setAccess(access)
                     localStorage.setItem('refreshToken', refresh)
-                    setRefresh(refresh)
+                    // setRefresh(refresh)
                     setError(null)
                     dispatch(updateAccess(access));
 

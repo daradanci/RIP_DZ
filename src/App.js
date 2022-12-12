@@ -19,7 +19,7 @@ import ManagerClient from "./components/ManagerClient";
 import NavBar from "./components/NavBar";
 import EditForm from "./components/EditForm";
 import ManagerRange from "./components/ManagerRange";
-
+import HomeNew from "./pages/NEW";
 // const LoginPage = lazy(() => import('./Auth'));
 // const Register = lazy(() => import('./Registration'));
 
@@ -73,6 +73,9 @@ function App() {
               </Route>
               <Route exact path={'/manager/clients/:clientId'}>
                 <ManagerClient/>
+              </Route>
+              <Route exact path={'/new'}>
+                <HomeNew/>
               </Route>
             </Switch>
           </div>

@@ -7,22 +7,49 @@ export const fetchManagerBags = createAsyncThunk(
     async () => {
         const config={
             headers:{
-                Authorization:localStorage.getItem('userId')
+                Authorization:`Bearer ${localStorage.getItem('accessToken')}`
             }
         }
         const response = await axios(`${IP4}old_bags`,config);
         return response.data
     }
 )
+
 export const fetchClientBags = createAsyncThunk(
     'manager/fetchClientBags',
     async (userId) => {
         const config={
             headers:{
-                Authorization:localStorage.getItem('userId')
+                Authorization:`Bearer ${localStorage.getItem('accessToken')}`
             }
         }
         const response = await axios(`${IP4}old_bags?user=${userId}`,config);
+        return response.data
+    }
+)
+export const filterClientBags = createAsyncThunk(
+    'manager/filterClientBags',
+    async (params) => {
+        const config={
+            headers:{
+                Authorization:`Bearer ${localStorage.getItem('accessToken')}`
+            }
+        }
+        let requestString=`${IP4}old_bags?`
+        if(params['clientId']!=='null'){
+            requestString+=`user=${params['clientId']}&`
+        }
+        if(params['status']!==0){
+            requestString+=`status=${params['status']}&`
+        }
+        if(params['startDate']!==null&&params['endDate']!==null){
+            requestString+=`startDate=${params['startDate']}&endDate=${params['endDate']}&`
+        }
+            const response = await axios(
+                // `${IP4}old_bags?user=${params['clientId']}&status=${params['status']}&startDate=${params['startDate']}&endDate=${params['endDate']}}`
+                requestString
+                ,config);
+
         return response.data
     }
 )
@@ -134,7 +161,13 @@ export const managerSlice = createSlice({
                 state.managerStatus = SuccessMessage
                 console.log('client bags:')
                 console.log(state.managerBags)
-
+            })
+            .addCase(filterClientBags.fulfilled, (state, action) => {
+                // Add user to the state array
+                state.managerBags=action.payload
+                state.managerStatus = SuccessMessage
+                console.log('client bags:')
+                console.log(state.managerBags)
             })
         .addCase(fetchBagStates.fulfilled, (state, action) => {
                 // Add user to the state array
