@@ -103,7 +103,7 @@ export const ManagerBags = () => {
 
                     <div>
                     <DateRangePicker
-                        initialSettings={{ startDate: '1/1/2022', endDate: '12/12/2022' }}
+                        initialSettings={{ startDate: '11/01/2022', endDate: '12/31/2022' }}
                         onApply={e=>{
                             e.preventDefault();
                             // console.log(123)
@@ -111,7 +111,7 @@ export const ManagerBags = () => {
                         }}
                         onCallback={upDate}
                       >
-                        <button>Click Me To Open Picker!</button>
+                        <button>Выбрать дату</button>
                       </DateRangePicker>
                     </div>
 

@@ -37,6 +37,7 @@ export const NavBar = () => {
     }, [])
 
     return (
+        <>
         <div className={"navbar"}>
               <div className={"nav-tabs"}>
                 <Link to="/">Дом</Link>
@@ -55,15 +56,27 @@ export const NavBar = () => {
                     <div className={"nav-tabs"}>
                       <Link to="/auth">Вход</Link>
                     </div>
-                    </>
+                  </>
                     :
                     <div className={"nav-tabs"}>
                     <Link to="/auth">Профиль</Link>
                     </div>
+
               }
 
 
-            </div>
+        </div>
+            <div className={"navbar-mobile"}>
+              <div className={"nav-tabs"}>
+                <Link to="/">Дом</Link>
+              </div>
+              <div className={"nav-tabs"}>
+                <Link to="/range">Ассортимент</Link>
+              </div>
+
+
+        </div>
+        </>
     );
 };
 

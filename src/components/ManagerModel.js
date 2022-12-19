@@ -68,7 +68,7 @@ export const ManagerModel = (curr_model) => {
             const add_model= e=>{
             e.preventDefault();
             let range1=JSON.parse(document.getElementById('range_list').value)
-            let producer1=JSON.parse(document.getElementById('producers_list').value)
+            // let producer1=JSON.parse(document.getElementById('producers_list').value)
 
             const requestOptions = {
             method: 'PUT',
@@ -77,7 +77,7 @@ export const ManagerModel = (curr_model) => {
                 modelid:curr_model.modelid,
                 idrange:range1,
                 modelname:newModel,
-                idproducer:producer1,
+                idproducer:curr_model.idproducer.producerid,
                 price:formPrice,
                 image: formImage,
                 })

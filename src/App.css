@@ -245,10 +245,16 @@ li {
   display: flex;
   text-align: center;
 }
+.navbar-mobile{
+  /*visibility: hidden;*/
+  display: none;
+}
 .nav-tabs{
   display: block;
   width: 20%;
   background-color: moccasin;
+      /*background-color: rgba(255, 177, 137, 0.42);*/
+
   padding: 20px;
   border: 2px solid coral;
   margin-bottom: 10px;
@@ -270,4 +276,38 @@ li {
   width: 158px;
   border-radius: 5px;
 
+}
+
+@media (max-width: 480px) {
+  .search_form{
+    visibility: hidden;
+    display: none;
+  }
+  .navbar{
+    visibility: hidden;
+    display: none;
+  }
+  .navbar-mobile{
+    display: flex;
+    text-align: center;
+  }
+  .nav-tabs{
+    display: block;
+    width: 50%;
+    background-color: rgba(255, 160, 122, 0.63);
+    padding: 20px;
+    border: 2px solid coral;
+    margin-bottom: 10px;
+
+
+  }
+  a.navbar-mobile:link{
+    color: #a95ed8;
+  }
+
+
+}
+#nav-tabs a:link{
+    text-decoration: none;
+  color: darkgray;
 }
